@@ -77,27 +77,50 @@ function bacaInput(teks) {
 }
 
 if (typeof document !== "undefined") {
-  const form = document.getElementById("form-gaji");
   const input = document.getElementById("gaji");
-  const pesan = document.getElementById("pesan");
-  const hasil = document.getElementById("hasil");
+  const kartu = document.getElementById("hasil");
+  const out = (id) => document.getElementById(id);
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const bruto = bacaInput(input.value);
-    if (bruto === null) {
-      pesan.textContent = "Masukkan gaji dalam angka rupiah bulat, misalnya 10.000.000.";
-      hasil.hidden = true;
+  // Format ulang angka saat diketik (10000000 -> 10.000.000),
+  // sambil menjaga posisi kursor relatif terhadap jumlah digit di kirinya.
+  function formatSaatKetik() {
+    const posisi = input.selectionStart ?? input.value.length;
+    const digitKiri = input.value.slice(0, posisi).replace(/\D/g, "").length;
+    const digit = input.value.replace(/\D/g, "").replace(/^0+(?=\d)/, "").slice(0, 15);
+    const tampil = digit ? Number(digit).toLocaleString("id-ID") : "";
+    input.value = tampil;
+
+    let i = 0;
+    let terlihat = 0;
+    while (i < tampil.length && terlihat < digitKiri) {
+      if (/\d/.test(tampil[i])) terlihat++;
+      i++;
+    }
+    input.setSelectionRange(i, i);
+    return digit;
+  }
+
+  function perbarui() {
+    const digit = formatSaatKetik();
+    const bruto = bacaInput(digit);
+    if (!digit || bruto === null) {
+      kartu.classList.add("kosong");
+      out("out-kotor").textContent = "Rp0";
+      out("out-tarif").textContent = "TER 0%";
+      out("out-pph").textContent = "−Rp0";
+      out("out-bersih").textContent = "Rp0";
       return;
     }
     const r = hitungGaji(bruto);
-    pesan.textContent = "";
-    document.getElementById("out-kotor").textContent = formatRupiah(r.bruto);
-    document.getElementById("out-tarif").textContent = formatTarif(r.bp);
-    document.getElementById("out-pph").textContent = formatRupiah(r.pph);
-    document.getElementById("out-bersih").textContent = formatRupiah(r.bersih);
-    hasil.hidden = false;
-  });
+    kartu.classList.remove("kosong");
+    out("out-kotor").textContent = formatRupiah(r.bruto);
+    out("out-tarif").textContent = "TER " + formatTarif(r.bp);
+    out("out-pph").textContent = "−" + formatRupiah(r.pph);
+    out("out-bersih").textContent = formatRupiah(r.bersih);
+  }
+
+  input.addEventListener("input", perbarui);
+  perbarui();
 }
 
 if (typeof module !== "undefined") {

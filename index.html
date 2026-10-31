@@ -2,28 +2,43 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
   <title>Kalkulator Gaji Bersih</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Kalkulator Gaji Bersih</h1>
-  <p>Status: TK/0 &middot; PPh 21 tarif TER kategori A</p>
+  <main class="wadah">
+    <header>
+      <h1>Kalkulator Gaji Bersih</h1>
+      <p class="sub">PPh 21 bulanan &middot; status TK/0 &middot; tarif TER kategori A</p>
+    </header>
 
-  <form id="form-gaji">
-    <label for="gaji">Gaji kotor per bulan (Rp)</label>
-    <input id="gaji" type="text" inputmode="numeric" placeholder="contoh: 10.000.000" autocomplete="off">
-    <button type="submit">Hitung</button>
-  </form>
+    <label for="gaji" class="label">Gaji kotor per bulan</label>
+    <div class="isian">
+      <span class="prefix" aria-hidden="true">Rp</span>
+      <input id="gaji" type="text" inputmode="numeric" placeholder="0"
+             autocomplete="off" autofocus aria-describedby="petunjuk">
+    </div>
+    <p id="petunjuk" class="petunjuk">Hasil langsung dihitung saat Anda mengetik.</p>
 
-  <p id="pesan" class="pesan" role="alert"></p>
+    <section id="hasil" class="kartu kosong" aria-live="polite">
+      <div class="baris">
+        <span>Gaji kotor</span>
+        <span id="out-kotor" class="nilai">Rp0</span>
+      </div>
+      <div class="baris potongan">
+        <span>Potongan PPh 21 <small id="out-tarif" class="lencana">TER 0%</small></span>
+        <span id="out-pph" class="nilai">−Rp0</span>
+      </div>
+      <div class="bersih">
+        <span>Gaji bersih (take home pay)</span>
+        <strong id="out-bersih">Rp0</strong>
+      </div>
+    </section>
 
-  <table id="hasil" hidden>
-    <tr><th>Gaji kotor</th><td id="out-kotor"></td></tr>
-    <tr><th>Tarif TER</th><td id="out-tarif"></td></tr>
-    <tr><th>PPh 21 sebulan</th><td id="out-pph"></td></tr>
-    <tr><th>Gaji bersih (take home pay)</th><td id="out-bersih"></td></tr>
-  </table>
+    <p class="catatan">Belum termasuk potongan lain seperti BPJS. Tarif TER berlaku masa pajak Januari–November.</p>
+  </main>
 
   <script src="app.js"></script>
 </body>
