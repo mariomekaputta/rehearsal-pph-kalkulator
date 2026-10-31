@@ -148,17 +148,61 @@ const KATEGORI_PTKP = {
   "K/3": "C",
 };
 
+// Iuran BPJS (persen dalam basis poin; batas = gaji maksimal yang dipakai sebagai dasar).
+const BPJS = {
+  // Dipotong dari gaji karyawan.
+  jht: { bp: 200 },
+  jp: { bp: 100, batas: 11086300 },
+  kesKaryawan: { bp: 100, batas: 12000000 },
+  // Dibayar perusahaan, menambah penghasilan bruto untuk PPh 21.
+  jkk: { bp: 24 },
+  jkm: { bp: 30 },
+  kesPerusahaan: { bp: 400, batas: 12000000 },
+};
+
+// n x bp / 10000 dengan bilangan bulat (BigInt) agar tidak ada galat pembulatan.
+function kaliBp(n, bp, bulatkan) {
+  const kali = BigInt(n) * BigInt(bp);
+  const hasil = bulatkan === "terdekat" ? (kali + 5000n) / 10000n : kali / 10000n;
+  return Number(hasil);
+}
+
+// Iuran BPJS dibulatkan ke rupiah terdekat.
+function iuran(gaji, { bp, batas = Infinity }) {
+  return kaliBp(Math.min(gaji, batas), bp, "terdekat");
+}
+
 function cariTarifBp(bruto, kategori) {
   return TER[kategori].find((baris) => bruto <= baris.batasAtas).bp;
 }
 
+// Bruto PPh 21 = gaji + JKK + JKM + BPJS Kesehatan perusahaan.
 // PPh 21 sebulan = bruto x tarif TER, dibulatkan ke bawah ke rupiah penuh.
-function hitungGaji(bruto, status = "TK/0") {
+// Gaji bersih = gaji - JHT - JP - BPJS Kesehatan karyawan - PPh 21.
+function hitungGaji(gaji, status = "TK/0") {
   const kategori = KATEGORI_PTKP[status];
   if (!kategori) throw new Error("Status PTKP tidak dikenal: " + status);
+
+  const jkk = iuran(gaji, BPJS.jkk);
+  const jkm = iuran(gaji, BPJS.jkm);
+  const kesPerusahaan = iuran(gaji, BPJS.kesPerusahaan);
+  const bruto = gaji + jkk + jkm + kesPerusahaan;
+
   const bp = cariTarifBp(bruto, kategori);
-  const pph = Math.floor((bruto * bp) / 10000);
-  return { bruto, status, kategori, bp, pph, bersih: bruto - pph };
+  const pph = kaliBp(bruto, bp, "bawah");
+
+  const jht = iuran(gaji, BPJS.jht);
+  const jp = iuran(gaji, BPJS.jp);
+  const kesKaryawan = iuran(gaji, BPJS.kesKaryawan);
+  const totalPotongan = jht + jp + kesKaryawan + pph;
+
+  return {
+    gaji, status, kategori,
+    jkk, jkm, kesPerusahaan, bruto,
+    bp, pph,
+    jht, jp, kesKaryawan, totalPotongan,
+    bersih: gaji - totalPotongan,
+  };
 }
 
 function formatRupiah(n) {
@@ -208,15 +252,24 @@ if (typeof document !== "undefined") {
 
   function tampilkan() {
     const status = statusTerpilih();
-    const kategori = KATEGORI_PTKP[status];
-    const bruto = bacaInput(input.value);
-    const r = hitungGaji(bruto ?? 0, status);
-    kartu.classList.toggle("kosong", !bruto);
+    const gaji = bacaInput(input.value);
+    const r = hitungGaji(gaji ?? 0, status);
+    const potong = (n) => "−" + formatRupiah(n);
+    kartu.classList.toggle("kosong", !gaji);
+
     out("out-status").textContent = status;
-    out("out-kategori").textContent = "Kategori " + kategori;
-    out("out-kotor").textContent = formatRupiah(r.bruto);
-    out("out-tarif").textContent = "TER " + kategori + " · " + formatTarif(r.bp);
-    out("out-pph").textContent = "−" + formatRupiah(r.pph);
+    out("out-kategori").textContent = "Kategori " + r.kategori;
+    out("out-kotor").textContent = formatRupiah(r.gaji);
+    out("out-jkk").textContent = "+" + formatRupiah(r.jkk);
+    out("out-jkm").textContent = "+" + formatRupiah(r.jkm);
+    out("out-kes-perusahaan").textContent = "+" + formatRupiah(r.kesPerusahaan);
+    out("out-bruto").textContent = formatRupiah(r.bruto);
+    out("out-tarif").textContent = "TER " + r.kategori + " · " + formatTarif(r.bp);
+    out("out-jht").textContent = potong(r.jht);
+    out("out-jp").textContent = potong(r.jp);
+    out("out-kes-karyawan").textContent = potong(r.kesKaryawan);
+    out("out-pph").textContent = potong(r.pph);
+    out("out-total-potongan").textContent = potong(r.totalPotongan);
     out("out-bersih").textContent = formatRupiah(r.bersih);
   }
 
@@ -230,5 +283,5 @@ if (typeof document !== "undefined") {
 }
 
 if (typeof module !== "undefined") {
-  module.exports = { hitungGaji, bacaInput, formatRupiah, TER, KATEGORI_PTKP };
+  module.exports = { hitungGaji, bacaInput, formatRupiah, TER, KATEGORI_PTKP, BPJS };
 }

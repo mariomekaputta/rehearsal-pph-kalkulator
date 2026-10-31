@@ -42,13 +42,49 @@
         <span>Status PTKP</span>
         <span class="nilai"><span id="out-status">TK/0</span> <small id="out-kategori" class="lencana">Kategori A</small></span>
       </div>
-      <div class="baris">
-        <span>Gaji kotor</span>
+      <div class="baris utama">
+        <span>Gaji</span>
         <span id="out-kotor" class="nilai">Rp0</span>
       </div>
-      <div class="baris potongan">
-        <span>Potongan PPh 21 <small id="out-tarif" class="lencana">TER A · 0%</small></span>
+
+      <h2 class="judul-bagian">Dibayar perusahaan, dihitung sebagai penghasilan bruto</h2>
+      <div class="baris rinci tambah">
+        <span>JKK (0,24%)</span>
+        <span id="out-jkk" class="nilai">+Rp0</span>
+      </div>
+      <div class="baris rinci tambah">
+        <span>JKM (0,3%)</span>
+        <span id="out-jkm" class="nilai">+Rp0</span>
+      </div>
+      <div class="baris rinci tambah">
+        <span>BPJS Kesehatan perusahaan (4%)</span>
+        <span id="out-kes-perusahaan" class="nilai">+Rp0</span>
+      </div>
+      <div class="baris subtotal">
+        <span>Penghasilan bruto untuk PPh 21</span>
+        <span id="out-bruto" class="nilai">Rp0</span>
+      </div>
+
+      <h2 class="judul-bagian">Potongan dari gaji</h2>
+      <div class="baris rinci potongan">
+        <span>JHT (2%)</span>
+        <span id="out-jht" class="nilai">−Rp0</span>
+      </div>
+      <div class="baris rinci potongan">
+        <span>JP (1%)</span>
+        <span id="out-jp" class="nilai">−Rp0</span>
+      </div>
+      <div class="baris rinci potongan">
+        <span>BPJS Kesehatan karyawan (1%)</span>
+        <span id="out-kes-karyawan" class="nilai">−Rp0</span>
+      </div>
+      <div class="baris rinci potongan">
+        <span>PPh 21 <small id="out-tarif" class="lencana">TER A · 0%</small></span>
         <span id="out-pph" class="nilai">−Rp0</span>
+      </div>
+      <div class="baris subtotal potongan">
+        <span>Total potongan</span>
+        <span id="out-total-potongan" class="nilai">−Rp0</span>
       </div>
       <div class="bersih">
         <span>Gaji bersih (take home pay)</span>
@@ -56,7 +92,7 @@
       </div>
     </section>
 
-    <p class="catatan">Belum termasuk potongan lain seperti BPJS. Tarif TER berlaku masa pajak Januari–November.</p>
+    <p class="catatan">Dasar iuran JP maksimal Rp11.086.300; BPJS Kesehatan maksimal Rp12.000.000. Iuran BPJS dibulatkan ke rupiah terdekat, PPh 21 dibulatkan ke bawah. Tarif TER berlaku masa pajak Januari–November.</p>
   </main>
 
   <script src="app.js"></script>
