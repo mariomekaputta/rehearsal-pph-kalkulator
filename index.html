@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kalkulator Gaji Bersih</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Kalkulator Gaji Bersih</h1>
+  <p>Status: TK/0 &middot; PPh 21 tarif TER kategori A</p>
+
+  <form id="form-gaji">
+    <label for="gaji">Gaji kotor per bulan (Rp)</label>
+    <input id="gaji" type="text" inputmode="numeric" placeholder="contoh: 10.000.000" autocomplete="off">
+    <button type="submit">Hitung</button>
+  </form>
+
+  <p id="pesan" class="pesan" role="alert"></p>
+
+  <table id="hasil" hidden>
+    <tr><th>Gaji kotor</th><td id="out-kotor"></td></tr>
+    <tr><th>Tarif TER</th><td id="out-tarif"></td></tr>
+    <tr><th>PPh 21 sebulan</th><td id="out-pph"></td></tr>
+    <tr><th>Gaji bersih (take home pay)</th><td id="out-bersih"></td></tr>
+  </table>
+
+  <script src="app.js"></script>
+</body>
+</html>
