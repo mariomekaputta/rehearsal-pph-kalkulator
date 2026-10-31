@@ -11,7 +11,7 @@
   <main class="wadah">
     <header>
       <h1>Kalkulator Gaji Bersih</h1>
-      <p class="sub">PPh 21 bulanan &middot; status TK/0 &middot; tarif TER kategori A</p>
+      <p class="sub">PPh 21 bulanan &middot; tarif efektif rata-rata (TER)</p>
     </header>
 
     <label for="gaji" class="label">Gaji kotor per bulan</label>
@@ -22,13 +22,32 @@
     </div>
     <p id="petunjuk" class="petunjuk">Hasil langsung dihitung saat Anda mengetik.</p>
 
+    <fieldset id="pilih-status" class="status">
+      <legend class="label">Status PTKP</legend>
+      <div class="chips">
+        <label class="chip"><input type="radio" name="status" value="TK/0" checked><span>TK/0</span></label>
+        <label class="chip"><input type="radio" name="status" value="TK/1"><span>TK/1</span></label>
+        <label class="chip"><input type="radio" name="status" value="TK/2"><span>TK/2</span></label>
+        <label class="chip"><input type="radio" name="status" value="TK/3"><span>TK/3</span></label>
+        <label class="chip"><input type="radio" name="status" value="K/0"><span>K/0</span></label>
+        <label class="chip"><input type="radio" name="status" value="K/1"><span>K/1</span></label>
+        <label class="chip"><input type="radio" name="status" value="K/2"><span>K/2</span></label>
+        <label class="chip"><input type="radio" name="status" value="K/3"><span>K/3</span></label>
+      </div>
+      <p class="petunjuk">TK = tidak kawin, K = kawin, angka = jumlah tanggungan.</p>
+    </fieldset>
+
     <section id="hasil" class="kartu kosong" aria-live="polite">
+      <div class="baris">
+        <span>Status PTKP</span>
+        <span class="nilai"><span id="out-status">TK/0</span> <small id="out-kategori" class="lencana">Kategori A</small></span>
+      </div>
       <div class="baris">
         <span>Gaji kotor</span>
         <span id="out-kotor" class="nilai">Rp0</span>
       </div>
       <div class="baris potongan">
-        <span>Potongan PPh 21 <small id="out-tarif" class="lencana">TER 0%</small></span>
+        <span>Potongan PPh 21 <small id="out-tarif" class="lencana">TER A · 0%</small></span>
         <span id="out-pph" class="nilai">−Rp0</span>
       </div>
       <div class="bersih">
